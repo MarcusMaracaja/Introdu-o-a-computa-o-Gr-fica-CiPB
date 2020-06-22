@@ -17,54 +17,22 @@ struct RGBA
 }RGBA;
 struct RGBA rgba;// = {255, 0,0, 255};
 
-struct Pixel
+typedef struct
 {
     int x;
     int y;
 }Pixel;
-
- struct P1
-{
-    int x1;
-    int y1;
-}P1;
-
- struct P2
-{
-    int x2;
-    int y2;
-}P2;
-
- struct DeltaX
- {
-    int deltaX;    
- }DeltaX;
-  struct DeltaY
- {
-    int deltaY;    
- }DeltaY;
-// -=--=-=pontos setados. acende um pixels no meio da tela =-=-=-/
-struct Pixel pixel;//= {250,250};
-struct P1 p1;
-struct P2 p2;
-struct DeltaX deltax;
-struct DeltaY deltay;
+Pixel pixel,p1,p2;
 //
 // >>> Defina aqui as funções que você implementar <<< 
 //
 // Definição da função que chamará as funções implementadas pelo aluno
-
 void MyGlDraw(void) {
 
-
 printPixels();
-
-Drawline();
-/* pixel da cor verde*/
-
-
-
- }
+printLines();
+//printTriagle();
+}
 
 int pos(int x, int y){
     int l = ((y*4)*IMAGE_WIDTH); //l é linha, 4 bytes por pixel
@@ -72,33 +40,33 @@ int pos(int x, int y){
     int position = l + c;
     return position;          
   }
-  void putPixel(struct Pixel pixel, struct RGBA rgba){
 
+  void putPixel(Pixel pixel, struct RGBA rgba){
 //teste para que não sejam pintados pixels indevidos na tela, limitando o desenho a apenas a area //disponível
-
-
-
  if((pixel.x>=0 && pixel.x<IMAGE_HEIGHT) && (pixel.y>=0 && pixel.y<IMAGE_WIDTH)){
-
-
+    //cores para os pixels
     fb_ptr[pos(pixel.x, pixel.y)+0] = rgba.red;
     fb_ptr[pos(pixel.x, pixel.y)+1] = rgba.green;
     fb_ptr[pos(pixel.x, pixel.y)+2] = rgba.blue;
     fb_ptr[pos(pixel.x, pixel.y)+3] = rgba.alpha;
-
-      
-  }
-
- 
-
+    //cores para os pixels do ponto 1 da reta
+    fb_ptr[pos(p1.x, p1.y)+0] = rgba.red;
+    fb_ptr[pos(p1.x, p1.y)+1] = rgba.green;
+    fb_ptr[pos(p1.x, p1.y)+2] = rgba.blue;
+    fb_ptr[pos(p1.x, p1.y)+3] = rgba.alpha;
+    //cores para os pixels do ponto 2 da reta
+    fb_ptr[pos(p2.x, p2.y)+0] = rgba.red;
+    fb_ptr[pos(p2.x, p2.y)+1] = rgba.green;
+    fb_ptr[pos(p2.x, p2.y)+2] = rgba.blue;
+    fb_ptr[pos(p2.x, p2.y)+3] = rgba.alpha;
+ }
 }
-
-
+//Funcao de acender pixels na tela com uma determinada cor
 void printPixels(){
 
 /* pixel da cor vermelha */
-pixel.x = 050;
-pixel.y = 184;
+pixel.x = 10;
+pixel.y = 100;
 rgba.red = 255;
 rgba.green = 0;
 rgba.blue = 0;
@@ -106,8 +74,8 @@ rgba.alpha = 255;
 putPixel(pixel, rgba);
 
 /* pixel da cor verde*/
-pixel.x = 165;
-pixel.y = 480;
+pixel.x = 30;
+pixel.y = 30;
 rgba.red = 0;
 rgba.green = 255;
 rgba.blue = 0;
@@ -115,102 +83,142 @@ rgba.alpha = 255;
 putPixel(pixel, rgba);
 
 /*píxel da cor azul*/
-pixel.x = 300;
-pixel.y = 120;
+pixel.x = 250;
+pixel.y = 150;
 rgba.red = 0;
 rgba.green = 0;
 rgba.blue = 255;
 rgba.alpha = 255; 
 putPixel(pixel, rgba);
+}
+
+//funcao de desenhar uma linha
+void drawline(Pixel p1, Pixel p2){
+    Pixel A = p1, B = p2;
+    int dX = B.x - A.x;  //delta X = x2 - x(incicial);
+    int dY = B.y - A.y;  //delta Y = y2 - y(inicial);
+    //armazenamento dos eixos
+    int eixoMaior, eixoMenor;   
+    int incrementoX0 = 0, incrementoY0 = 0, incrementoX1 = 0, incrementoY1 = 0, numerador;
+
+    //testes para analisar se os eixos estão crescendo ou decrescendo de acordo com o delta
+    if (dX > 0){            
+        incrementoX0 = incrementoX1 = 1;
+    }
+
+    if (dX < 0){     
+        incrementoX0 = incrementoX1 = -1;
+    }
+
+    if (dY > 0){              
+        incrementoY0 = 1;
+    }
+    if (dY < 0){     
+        incrementoY0 = -1 ;
+    }
+
+    if (abs(dX) >= abs(dY)){     
+        eixoMaior = abs(dX);
+        eixoMenor = abs(dY);
+    }else {
+        eixoMaior = abs(dY);
+        eixoMenor = abs(dX);
+
+         if(dY > 0){         
+            incrementoY1 = 1;
+        }
+
+        if (dY < 0){    
+            incrementoY1 = -1;
+        } 
+        incrementoX1 = 0;
+    }
+    numerador = eixoMaior/2;
+    for (int i = 0; i <= eixoMaior; i++){
+        putPixel(A, rgba);
+        numerador += eixoMenor;
+
+        if (numerador > eixoMaior){
+            numerador -= eixoMaior;
+            A.x += incrementoX0;
+            A.y += incrementoY0;
+
+        }else {
+
+            A.x += incrementoX1;
+            A.y += incrementoY1;
+         }
+    } 
 
 }
 
-void Drawline(){
-    int DELTAX = (DeltaX.deltaX = P2.x2 - P1.x1);
-    int DELTAY = (DeltaY.deltaY = P2.y2 - P1.y1);
-    int d = 2*DELTAY - DELTAX;
-    int incE = 2 *DELTAY;
-    int incNE = 2*(DELTAY - DELTAX);
+void printLines(){
+
+  //desenha uma linha vermelha
+  p1.x = 50;
+  p1.y = 450;
+  rgba.red = 255;
+  rgba.green = 0;
+  rgba.blue = 0;
+  rgba.alpha = 255;
+
+  p2.x = 400;
+  p2.y = 250;
+  rgba.red = 255;
+  rgba.green = 0;
+  rgba.blue = 0;
+  rgba.alpha = 255;
+  drawline(p1,p2);
+
+  //desenha uma linha azul
+  p1.x = 500;
+  p1.y = 45;
+  rgba.red = 0;
+  rgba.green = 0;
+  rgba.blue = 255;
+  rgba.alpha = 255;
+
+  p2.x = 100;
+  p2.y = 350;
+  rgba.red = 0;
+  rgba.green = 0;
+  rgba.blue = 255;
+  rgba.alpha = 255;
+  drawline(p1,p2);
+  
+  
+  //desenha uma linha rosa
+  p1.x = 510;
+  p1.y = 510;
+  rgba.red = 242;
+  rgba.green = 126;
+  rgba.blue = 211;
+  rgba.alpha = 255;
+
+  p2.x = 210;
+  p2.y = 104;
+  rgba.red = 242;
+  rgba.green = 126;
+  rgba.blue = 211;
+  rgba.alpha = 255;
+  drawline(p1,p2);
+//desenha uma linha colorida frenética :D
+  
+  p1.x = 0;
+  p1.y = 0;
+  rgba.red = rand() % 255;
+  rgba.green = rand() % 255;
+  rgba.blue = rand() % 255;
+  rgba.alpha = 255;
+
+  p2.x = 200;
+  p2.y = 512;
+  rgba.red = rand() % 255;
+  rgba.green = rand() % 255;
+  rgba.blue = rand() % 255;
+  rgba.alpha = 255;
+  drawline(p1,p2);
+  
+  
+}      
     
-//desenhamos 3 linhas
-for(int i = 0; i <= 250;i++){
-  /*desenha uma linha vermelha na diagonal de cima para baixo
-  E na metade muda para verde*/
-    pixel.x = i;
-    pixel.y = i; //como não há parametro para o coeficiente angular a linha terá 45°
-
-    rgba.red = 255;
-    rgba.green = 0;
-    rgba.blue = 0;
-    rgba.alpha = 255;
-
-    if(i >= 125){      //muda para verde
-      rgba.red = 0;
-      rgba.green = 0;
-      rgba.blue = 255;
-      rgba.alpha = 255;
-
-    }
-
-      putPixel(pixel, rgba);
-
-      
-}
-for(int j = 0;j <= 512; j++){
-  pixel.x = j;
-  pixel.y = 250;
-
-   rgba.red = 0;
-   rgba.green = 255;
-   rgba.blue = 0;
-   rgba.alpha = 255;
-
-   putPixel(pixel, rgba);
-  
-  
-}
-
-for(int i=0, j=250; i<250;i++,j--){
-  
-  
-    pixel.x = j;
-    pixel.y = i;
-
-    rgba.red = 200;
-    rgba.green = 224;
-    rgba.blue = 18;
-    rgba.alpha = 255;
- 
-    putPixel(pixel, rgba);
-    }
-   
-}
-
-/*void drawline(){
-
-    int DELTAX = (DeltaX.deltaX = P2.x2 - P1.x1);
-    int DELTAY = (DeltaY.deltaY = P2.y2 - P1.y1);
-    int d = 2*DELTAY - DELTAX;
-    int incE = 2 *DELTAY;
-    int incNE = 2*(DELTAY - DELTAX);
-    int x=P1.x1;
-	int y=P1.y1;
-    while(P2.x2<P1.x1)
-    {
-		if(d>=0)
-		{
-			putPixel(pixel,rgba);
-			y=y+1;
-			d=d+2*DELTAY-2*DELTAX;
-		}
-		else
-		{
-			putpixel(pixel,rgba);
-			d=d+2*DELTAY;
-		}
-		x=x+1;
-	}
-}*/
-
-
-
