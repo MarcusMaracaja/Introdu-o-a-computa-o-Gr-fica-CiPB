@@ -18,7 +18,7 @@
     float d = 0.0f;// exercicio da translacao, 1 para os valores que o professor pediu, zero para o padrão 
     int g = 0;// exrecicio movimento da camera, 1 para os valores que o professor pediu, zero para o padrão
     int h = 0;// exercicio da perspectiva, 1 para os valores que o professor pediu, zero para o padrão
-    int s;
+    int s = 0;
     float D = 0.5f;
     //varivaveis da escala
     float sx = 1.0f,sy = 1.0f,sz = 1.0f;
@@ -165,7 +165,7 @@ void Exercicio1(){
     printf("=-=-=-=-=-==-=-=-=-=-=-==-=-=-=-=-=\n");
     printf("Exercicio 1: Da escala\n");
     printf("Modifica os valores em X, Y e Z  de acordo com o que foi pedido\n");
-    printf("O X = 1/3, o y = 3/2 e o x = 1\n");
+    printf("O X = 1/3, o Y = 3/2 e o Z = 1\n");
     printf("para ver os triangulos com a escala do exercicio digite 1, se não digite qualquer numero\n");
     scanf("%i",&s);
          
@@ -272,11 +272,11 @@ void Exercicio5(){
         D = 0.5f;
                 
         printf("Digite o valor da escala em X (numero flutuante): \n");
-        scanf("%f", &px);
+        scanf("%f", &cx);
         printf("Digite o valor da escala em Y (numero flutuante): \n");
-        scanf("%f", &py);
+        scanf("%f", &cy);
         printf("Digite o valor da escala em Z (numero flutuante): \n");
-        scanf("%f", &pz);
+        scanf("%f", &cz);
         }
 
  
