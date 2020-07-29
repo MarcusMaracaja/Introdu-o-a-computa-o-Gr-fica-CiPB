@@ -1,4 +1,4 @@
-# ICG atividade 2
+# ICG atividade 2 e 3
 Link do youtube para a tividade 2
 https://youtu.be/-_7ubpnSsS8
 Link do youtube para a tividade 3
